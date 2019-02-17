@@ -40,16 +40,24 @@ io.on('connection', (socket) => {
     // emit event to every clients but not newUser
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
-    socket.on('createMessage', (message) => {
+    /* socket.on('createMessage', (message) => {
         console.log('Create Message', message);
         // emit event to every clients
         io.emit('newMessage', generateMessage(message.from, message.text));
         // emit event to every clients but not myself
-        /* socket.broadcast.emit('newMessage', { 
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        }); */
+        // socket.broadcast.emit('newMessage', { 
+        //     from: message.from,
+        //     text: message.text,
+        //     createdAt: new Date().getTime()
+        // });
+    }); */
+
+    // Event Acknowledgements
+    socket.on('createMessage', (message, callback) => {
+        console.log('Create Message', message);
+        // emit event to every clients
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        callback('This is from the server.');
     });
 
     socket.on('disconnect', () => {
