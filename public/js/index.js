@@ -8,10 +8,10 @@ socket.on('connect', function() {
         text: 'Hey. This is Andrew.'
     }); */
 
-    socket.emit('createMessage', {
+    /* socket.emit('createMessage', {
         from: 'Andrew',
         text: 'Yup, that works for me.'
-    });
+    }); */
 });
 
 socket.on('disconnect', function() {
