@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 
 /* console.log(__dirname + '/../public');
@@ -34,26 +35,17 @@ io.on('connection', (socket) => {
         createdAt: 123123
     }); */
 
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the chap app',
-        createAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
 
-    socket.broadcast.emit('newMessage', { // emit event to every clients but not newUser
-        from: 'Admin',
-        text: 'New user joined',
-        createdAt: new Date().getTime()
-    });
+    // emit event to every clients but not newUser
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
     socket.on('createMessage', (message) => {
         console.log('Create Message', message);
-        io.emit('newMessage', { // emit event to every clients
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
-        /* socket.broadcast.emit('newMessage', { // emit event to every clients but not myself
+        // emit event to every clients
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        // emit event to every clients but not myself
+        /* socket.broadcast.emit('newMessage', { 
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
