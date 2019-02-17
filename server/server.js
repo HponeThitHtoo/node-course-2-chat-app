@@ -34,14 +34,30 @@ io.on('connection', (socket) => {
         createdAt: 123123
     }); */
 
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to the chap app',
+        createAt: new Date().getTime()
+    });
+
+    socket.broadcast.emit('newMessage', { // emit event to every clients but not newUser
+        from: 'Admin',
+        text: 'New user joined',
+        createdAt: new Date().getTime()
+    });
+
     socket.on('createMessage', (message) => {
         console.log('Create Message', message);
         io.emit('newMessage', { // emit event to every clients
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
-        }); 
-            
+        });
+        /* socket.broadcast.emit('newMessage', { // emit event to every clients but not myself
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        }); */
     });
 
     socket.on('disconnect', () => {
