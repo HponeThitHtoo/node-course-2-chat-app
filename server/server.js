@@ -87,16 +87,27 @@ io.on('connection', (socket) => {
 
     // Event Acknowledgements callback
     socket.on('createMessage', (message, callback) => {
-        console.log('Create Message', message);
-        // emit event to every clients
-        io.emit('newMessage', generateMessage(message.from, message.text));
+        // console.log('Create Message', message);
+        // get the message sending user
+        var user = users.getUser(socket.id);
+
+        if (user && isRealString(message.text)) {
+            // emit event to every clients in particular chat room
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+        }
         // callback('This is from the server.');
         callback();
     });
 
     socket.on('createLocationMessage', (coords) => {
-        // emit event to every clients
-        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        // get the message sending user
+        var user = users.getUser(socket.id);
+
+        if (user) {
+            // emit event to every clients in particular chat room
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
+
     });
 
     socket.on('disconnect', () => {
